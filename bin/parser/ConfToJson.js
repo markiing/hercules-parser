@@ -1,6 +1,6 @@
 const fs = require("fs")
 const readline = require('readline')
-const convertToUTF8 = require('./util')
+const {convertToUTF8, deleteFileIfExists} = require('./util')
 const {showInfo, showError} = require('../util/logging')
 const set = require("lodash").set
 
@@ -61,8 +61,13 @@ const addAtomicData = (index, obj, data, innerkey) => {
         else if(isNaN(value) && value.startsWith("[")){
             //Check if starts with [ (array case), and remove double quotes
             value = value.replace("[","").replace("]","").split(",").map(x=>+x)
-        }else{
-            value = convertToUTF8(value)
+        } else if(isNaN(value) && (value === "false"|| value === "true")){
+            value = Boolean(value)
+        }   
+        else{
+            if(value.startsWith("\"")){
+                value = value.replaceAll("\"","")
+            }
         }
 
         if(parts.length == 2){
@@ -123,14 +128,7 @@ const parse = (inputFilePath, outputFilePath) => {
 
 
     readlineInterface.on('close', () => {
-        try {
-            if (fs.existsSync(outputFilePath)) {
-                fs.unlinkSync(outputFilePath)
-            }
-        } catch(err) {
-            console.error(err)
-        }
-
+        deleteFileIfExists(outputFilePath);
         fs.writeFile(outputFilePath, JSON.stringify(parseObj, null, '\t'), function(err) {
             if(err) {
                 return console.log(err);

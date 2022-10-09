@@ -1,10 +1,12 @@
 const {parse} = require('../parser/ConfToJson')
+const { parseToConf } = require('../parser/JsonToConf')
 const {showError, showWarn} = require('../util/logging')
 
 const processCall = (args) => {
     const inputFile = args.i;
     const outputFile = args.o;
     const format = args.f;
+    const type = args.t;
 
     if(!["json", "conf"].includes(format)){
         showError("This format is invalid, we just accept `json` and `conf`.");
@@ -14,7 +16,7 @@ const processCall = (args) => {
     if(format === "json"){
         parse(inputFile, outputFile)
     }else{
-        showWarn("We don't have parse for this yet. Wait for future releases");
+        parseToConf(inputFile, outputFile, type)
         return 1
     }
 

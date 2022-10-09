@@ -1,5 +1,4 @@
 const {parse, getParseState, addAtomicData, addObjectData} = require('../../bin/parser/ConfToJson')
-const path = require('path')
 
 describe("Conf File Test Battery", () => {
 
@@ -66,8 +65,8 @@ describe("Conf File Test Battery", () => {
             it("should add string AtomicData into object", () => {
                 let obj = [{}]
                 const index = 0;
-                addAtomicData(index, obj, "Name: Maçã Vermelha");
-                expect(obj[0].Name).toEqual("Maçã Vermelha")
+                addAtomicData(index, obj, "Name: MaÃ§Ã£ Vermelha");
+                expect(obj[0].Name).toEqual("MaÃ§Ã£ Vermelha")
             })
     
             it("should add string with parenthesis AtomicData into object", () => {
@@ -82,6 +81,14 @@ describe("Conf File Test Battery", () => {
                 const index = 0;
                 addAtomicData(index, obj, "Attack: [80, 135]");
                 expect(obj[0].Attack).toEqual([80,135])
+            })
+
+
+            it("should add boolean AtomicData into object", () => {
+                let obj = [{}]
+                const index = 0;
+                addAtomicData(index, obj, "Attack: true");
+                expect(obj[0].Attack).toEqual(true)
             })
 
             it("should add atomic data with innerKey data", () => {
